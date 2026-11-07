@@ -26,7 +26,7 @@ python demo_app.py
 python service_check.py http http://127.0.0.1:8000/health
 python service_check.py http http://127.0.0.1:8000/fail
 python service_check.py tcp 127.0.0.1 8000
-python service_check.py http http://127.0.0.1:8000/health --json --log results.jsonl
+python service_check.py --json --log results.jsonl http http://127.0.0.1:8000/health
 ~~~
 
 Код завершения: 0 — всё хорошо; 2 — проверка не прошла. Проверяйте только свои ресурсы или ресурсы, на проверку которых у вас есть разрешение.
