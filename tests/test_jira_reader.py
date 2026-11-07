@@ -30,13 +30,14 @@ class JiraReaderTests(unittest.TestCase):
             },
         }
         body = io.BytesIO(json.dumps(fake).encode("utf-8"))
-        with patch("jira_issue_reader.urlopen", return_value=body) as urlopen:
+        with patch("jira_issue_reader.build_opener") as builder:
+            builder.return_value.open.return_value = body
             item = get_issue("DEMO-1", "https://test.atlassian.net",
                              "test@example.com", "not-real-token")
         self.assertEqual(item["summary"], "Test issue")
         self.assertEqual(item["status"], "To Do")
         self.assertEqual(item["priority"], "Medium")
-        self.assertEqual(urlopen.call_count, 1)
+        self.assertEqual(builder.return_value.open.call_count, 1)
 
 
 if __name__ == "__main__":
