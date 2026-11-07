@@ -10,7 +10,13 @@ import os
 import re
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlsplit
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+
+class NoRedirect(HTTPRedirectHandler):
+    """Не передаём Authorization на другой адрес через HTTP redirect."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 
 def get_issue(key, base_url, email, api_token):
@@ -18,8 +24,8 @@ def get_issue(key, base_url, email, api_token):
         raise ValueError("Ожидается ключ типа DEMO-1")
     base_url = base_url.strip().rstrip("/")
     parsed = urlsplit(base_url)
-    if parsed.scheme != "https" or not parsed.hostname:
-        raise ValueError("Для Jira Cloud нужен HTTPS URL")
+    if parsed.scheme != "https" or not parsed.hostname or not parsed.hostname.endswith(".atlassian.net"):
+        raise ValueError("Для Jira Cloud нужен HTTPS адрес вида site.atlassian.net")
     if not email or not api_token:
         raise ValueError("Нужны JIRA_EMAIL и JIRA_API_TOKEN")
 
@@ -31,7 +37,7 @@ def get_issue(key, base_url, email, api_token):
         "Accept": "application/json",
         "User-Agent": "it-support-study/0.1",
     })
-    with urlopen(request, timeout=10) as response:
+    with build_opener(NoRedirect).open(request, timeout=10) as response:
         data = json.load(response)
     fields = data.get("fields") or {}
     return {
