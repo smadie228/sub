@@ -22,6 +22,7 @@ def check_http(url, expected=200, timeout=3.0):
         error = None
     except HTTPError as exc:
         status, error = exc.code, None
+        exc.close()  # HTTPError holds a response stream that must be closed.
     except (URLError, OSError, ValueError) as exc:
         status, error = None, str(exc)
 
