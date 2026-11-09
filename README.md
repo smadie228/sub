@@ -41,6 +41,7 @@ python -m unittest discover -s tests -v
 
 - [Алгоритм L1-диагностики](docs/L1_RUNBOOK.md)
 - [Учебный тикет в стиле Jira](docs/JIRA_SAMPLE.md)
+- [QA-чеклист и шаблон баг-репорта (KAN-6)](docs/QA_CHECKLIST.md)
 - [Чтение учебной задачи через Jira Cloud API](docs/JIRA_API.md)
 - [План самостоятельной практики](docs/PRACTICE.md)
 
